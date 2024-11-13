@@ -14,10 +14,11 @@ public:
     std::string getComment(int id) const;
     std::string getVerdict(int id) const;
     std::vector<double> getTopics(int id) const;
+    std::string getDate(int id) const;
+    std::int32_t getSize() const;
 
 private:
     std::unordered_map<int, Statement> entries;
-    int size;
 };
 
 #endif // STATEMENTS_H

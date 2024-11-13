@@ -1,11 +1,9 @@
 // Topic_generator.cpp
 #include "Topic_generator.h"
 #include <nlohmann/json.hpp>
-#include <boost/process.hpp>
 #include <fstream>
 #include <iostream>
 
-namespace bp = boost::process;
 using json = nlohmann::json;
 
 Topic_generator::Topic_generator() : malletFile(""), rawData("") {
@@ -28,9 +26,8 @@ void Topic_generator::importStoreData(Statements& statements) {
         std::string comment = item["statement"];
         std::string date = item["statement_date"];
 
-        // Create a Statement object and add it to Statements
         Statement statement(comment, static_cast<Verdict>(verdict == "true" ? 1 : 0), date);
-        statements.addStatement(id++, statement, {});  // Empty topics for now
+        statements.addStatement(id++, statement, {});
     }
 
     std::cout << "Data successfully imported and stored in Statements table." << std::endl;
@@ -41,39 +38,53 @@ void Topic_generator::dataDateFilter(const std::string& input) {
     return;
 }
 
-void Topic_generator::buildMalletProfile(const std::string& input, const std::string& output) {
+void Topic_generator::buildMalletProfile(Statements& statements, const std::string& output) {
     try {
-        std::cout << "Building Mallet profile..." << std::endl;
+        std::cout << "Building Mallet profile from Statements table..." << std::endl;
 
-        // Command to execute "mallet import-file"
-        std::string command = "mallet import-file --input " + input + 
-                              " --output " + output + 
+        const std::string tempInputFile = "./temp/statements_only.txt";
+        std::ofstream outFile(tempInputFile);
+        if (!outFile.is_open()) {
+            std::cerr << "Error: Could not create temporary input file." << std::endl;
+            return;
+        }
+
+        for (int id = 0; id < statements.getSize(); ++id) {
+            outFile << statements.getComment(id) << std::endl;
+        }
+        outFile.close();
+        std::cout << "Statements written to " << tempInputFile << std::endl;
+
+        std::string command = "mallet import-file --input " + tempInputFile + 
+                              " --output ./temp/" + output + ".mallet" +
                               " --keep-sequence --remove-stopwords";
 
-        // Run the command using Boost.Process
-        bp::system(command, bp::std_out > stdout, bp::std_err > stderr);
-
-        std::cout << "Mallet profile built successfully: " << output << std::endl;
+        int ret_code = std::system(command.c_str());
+        if (ret_code != 0) {
+            std::cerr << "Error: Mallet process failed with exit code " << ret_code << std::endl;
+        } else {
+            std::cout << "Mallet profile built successfully." << std::endl;
+        }
     } catch (const std::exception& ex) {
         std::cerr << "Error in buildMalletProfile: " << ex.what() << std::endl;
     }
 }
 
-void Topic_generator::generateTopics(const std::string& input, int numTopics, const std::string& outputState, const std::string& output) {
+void Topic_generator::generateTopics(const std::string& input, int numTopics, const std::string& output) {
     try {
         std::cout << "Generating topics..." << std::endl;
 
-        // Command to execute "mallet train-topics"
-        std::string command = "mallet train-topics --input " + input + 
-                              " --num-topics " + std::to_string(numTopics) + 
-                              " --output-state " + outputState + 
-                              " --output-topic-keys " + output + "_keys.txt" +
-                              " --output-doc-topics " + output + "_composition.txt";
+        std::string command = "mallet train-topics --input ./temp/" + input + ".mallet" + 
+                              " --num-topics " + std::to_string(numTopics) +
+                              " --output-topic-keys ./temp/" + output + "_keys.txt" +
+                              " --output-doc-topics ./temp/" + output + "_composition.txt";
 
-        // Run the command using Boost.Process
-        bp::system(command, bp::std_out > stdout, bp::std_err > stderr);
-
-        std::cout << "Topics generated successfully." << std::endl;
+        int ret_code = std::system(command.c_str());
+        if (ret_code != 0) {
+            std::cerr << "Error: Mallet process failed with exit code " << ret_code << std::endl;
+        } else {
+            std::cout << "Topics generated successfully." << std::endl;
+        }
     } catch (const std::exception& ex) {
         std::cerr << "Error in generateTopics: " << ex.what() << std::endl;
     }

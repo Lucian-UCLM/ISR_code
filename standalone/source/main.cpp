@@ -58,6 +58,9 @@ auto main(int argc, char** argv) -> int {
 
     // Call importStoreData to load data from JSON
     topicGenerator.importStoreData(statements);
+    topicGenerator.buildMalletProfile(statements, "profile1");
+    topicGenerator.generateTopics("profile1", 20, "profile1");
+
 
     return 0;
 }

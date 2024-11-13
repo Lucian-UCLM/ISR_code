@@ -8,8 +8,13 @@ void Statements::addStatement(int id, const Statement& statement, const std::vec
 }
 
 std::string Statements::getComment(int id) const {
-    // Placeholder return
-    return entries.at(id).getComment();
+    auto it = entries.find(id);
+    if (it != entries.end()) {
+        return it->second.getComment();
+    } else {
+        std::cerr << "Error: Statement with id " << id << " not found." << std::endl;
+        return "";
+    }
 }
 
 std::string Statements::getVerdict(int id) const {
@@ -21,4 +26,8 @@ std::vector<double> Statements::getTopics(int id) const {
     // Placeholder empty vector, implement as needed
     (void)id;
     return {};
+}
+
+std::int32_t Statements::getSize() const {
+    return static_cast<std::int32_t>(entries.size());
 }
