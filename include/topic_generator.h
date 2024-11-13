@@ -7,11 +7,9 @@
 
 class Topic_generator {
 public:
-    
     Topic_generator();
 
     void importStoreData(Statements& statements);
-    void callJavaHelloWorld();
     void dataCleaner(const std::string& input);
     void dataDateFilter(const std::string& input);
     void buildMalletProfile(const std::string& input, const std::string& output);

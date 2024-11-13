@@ -58,8 +58,6 @@ auto main(int argc, char** argv) -> int {
 
     // Call importStoreData to load data from JSON
     topicGenerator.importStoreData(statements);
-    
-    //topicGenerator.callJavaHelloWorld();
 
     return 0;
 }

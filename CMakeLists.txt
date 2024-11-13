@@ -30,6 +30,12 @@ CPMAddPackage(
   OPTIONS "FMT_INSTALL YES"
 )
 
+CPMAddPackage(
+  NAME Boost
+  GITHUB_REPOSITORY boostorg/process
+  GIT_TAG boost-1.82.0
+)
+
 CPMAddPackage("gh:nlohmann/json@3.10.5")
 
 # ---- Add source files ----
@@ -48,18 +54,15 @@ target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>
 # Link dependencies
 target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt nlohmann_json)
 
+if (BoostProcess_ADDED)
+  message(STATUS "Boost.Process added via CPM at ${Boost_SOURCE_DIR}")
+  target_include_directories(${PROJECT_NAME} PRIVATE ${Boost_SOURCE_DIR})
+endif()
+
 target_include_directories(
   ${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
                          $<INSTALL_INTERFACE:include/${PROJECT_NAME}-${PROJECT_VERSION}>
 )
-
-# ---- JNI Setup ----
-
-# find_package(JNI REQUIRED)
-# target_include_directories(${PROJECT_NAME} PRIVATE ${JNI_INCLUDE_DIRS})
-# target_link_libraries(${PROJECT_NAME} PRIVATE ${JNI_LIBRARIES})
-
-# set(CLASSPATH "${CMAKE_CURRENT_SOURCE_DIR}/java")
 
 # ---- Create an installable target ----
 
