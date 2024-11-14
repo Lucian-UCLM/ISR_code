@@ -60,6 +60,7 @@ auto main(int argc, char** argv) -> int {
     topicGenerator.importStoreData(statements);
     topicGenerator.buildMalletProfile(statements, "profile1");
     topicGenerator.generateTopics("profile1", 20, "profile1");
+    topicGenerator.calculateAndPrintPerplexity();
 
 
     return 0;

@@ -32,6 +32,20 @@ CPMAddPackage(
 
 CPMAddPackage("gh:nlohmann/json@3.10.5")
 
+# ---- Add JNI ----
+
+# find_package(JNI REQUIRED)
+# if (JNI_FOUND)
+#     message(STATUS "JNI found: ${JNI_INCLUDE_DIRS}")
+#     include_directories(${JNI_INCLUDE_DIRS})
+#     link_libraries(${JNI_LIBRARIES})
+# else()
+#     # Manually set paths if JNI is not found automatically
+#     include_directories("C:/Program Files/Java/jdk-17.0.4.1/include")
+#     include_directories("C:/Program Files/Java/jdk-17.0.4.1/include/win32")
+#     link_directories("C:/Program Files/Java/jdk-17.0.4.1/lib")
+# endif()
+
 # ---- Add source files ----
 
 file(GLOB_RECURSE headers CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h")
