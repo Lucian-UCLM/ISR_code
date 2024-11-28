@@ -32,19 +32,11 @@ CPMAddPackage(
 
 CPMAddPackage("gh:nlohmann/json@3.10.5")
 
-# ---- Add JNI ----
-
-# find_package(JNI REQUIRED)
-# if (JNI_FOUND)
-#     message(STATUS "JNI found: ${JNI_INCLUDE_DIRS}")
-#     include_directories(${JNI_INCLUDE_DIRS})
-#     link_libraries(${JNI_LIBRARIES})
-# else()
-#     # Manually set paths if JNI is not found automatically
-#     include_directories("C:/Program Files/Java/jdk-17.0.4.1/include")
-#     include_directories("C:/Program Files/Java/jdk-17.0.4.1/include/win32")
-#     link_directories("C:/Program Files/Java/jdk-17.0.4.1/lib")
-# endif()
+CPMAddPackage(
+  NAME tinyxml2
+  GITHUB_REPOSITORY leethomason/tinyxml2
+  VERSION 10.0.0
+)
 
 # ---- Add source files ----
 
@@ -60,7 +52,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
 target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->")
 
 # Link dependencies
-target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt nlohmann_json)
+target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt nlohmann_json tinyxml2::tinyxml2)
 
 target_include_directories(
   ${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
@@ -80,7 +72,7 @@ packageProject(
   INCLUDE_DESTINATION include/${PROJECT_NAME}-${PROJECT_VERSION}
   VERSION_HEADER "${VERSION_HEADER_LOCATION}"
   COMPATIBILITY SameMajorVersion
-  DEPENDENCIES "fmt 9.1.0"
+  DEPENDENCIES "fmt 9.1.0;tinyxml2 9.0.0"
 )
 
 # ---- Install header dependencies ----

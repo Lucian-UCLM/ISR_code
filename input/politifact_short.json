@@ -1,0 +1,44 @@
+{
+  "statements": [
+    {
+      "verdict": "true",
+      "statement_originator": "Barack Obama",
+      "statement": "John McCain opposed bankruptcy protections for families \"who were only in bankruptcy because of medical expenses they couldn't pay.\"",
+      "statement_date": "6/11/2008",
+      "statement_source": "speech",
+      "factchecker": "Adriel Bettelheim",
+      "factcheck_date": "6/16/2008",
+      "factcheck_analysis_link": "https://www.politifact.com/factchecks/2008/jun/16/barack-obama/no-exemptions-for-debtors/"
+    },
+    {
+      "verdict": "false",
+      "statement_originator": "Matt Gaetz",
+      "statement": "\"Bennie Thompson actively cheer-led riots in the \u201990s.\"",
+      "statement_date": "6/7/2022",
+      "statement_source": "television",
+      "factchecker": "Yacob Reyes",
+      "factcheck_date": "6/13/2022",
+      "factcheck_analysis_link": "https://www.politifact.com/factchecks/2022/jun/13/matt-gaetz/gaetz-mischaracterizes-bennie-thompsons-stance-rio/"
+    },
+    {
+      "verdict": "mostly-true",
+      "statement_originator": "Kelly Ayotte",
+      "statement": "Says\u00a0Maggie Hassan was \"out of state on 30 days over the last three months.\"",
+      "statement_date": "5/18/2016",
+      "statement_source": "news",
+      "factchecker": "Clay Wirestone",
+      "factcheck_date": "5/27/2016",
+      "factcheck_analysis_link": "https://www.politifact.com/factchecks/2016/may/27/kelly-ayotte/how-much-has-maggie-hassan-been-out-new-hampshire-/"
+    },
+    {
+      "verdict": "false",
+      "statement_originator": "Bloggers",
+      "statement": "\"BUSTED: CDC Inflated COVID Numbers, Accused of Violating Federal Law\"",
+      "statement_date": "2/1/2021",
+      "statement_source": "blog",
+      "factchecker": "Madison Czopek",
+      "factcheck_date": "2/5/2021",
+      "factcheck_analysis_link": "https://www.politifact.com/factchecks/2021/feb/05/blog-posting/no-cdc-isnt-inflating-coronavirus-statistics/"
+    }
+  ]
+}

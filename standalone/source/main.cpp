@@ -8,6 +8,7 @@
 
 #include "Topic_generator.h"
 #include "Statements.h"
+#include "Network_synthesizer.h"
 
 auto main(int argc, char** argv) -> int {
     const std::unordered_map<std::string, factify::LanguageCode> languages{
@@ -50,17 +51,19 @@ auto main(int argc, char** argv) -> int {
     factify::Factify factify(name);
     std::cout << factify.greet(langIt->second) << std::endl;
 
-    std::cout << "Hello" << std::endl;
-
     // Create Topic_generator and Statements instances
     Topic_generator topicGenerator;
     Statements statements;
 
-    // Call importStoreData to load data from JSON
     topicGenerator.importStoreData(statements);
     topicGenerator.buildMalletProfile(statements, "profile1");
-    topicGenerator.generateTopics("profile1", 20, "profile1");
-    topicGenerator.calculateAndPrintPerplexity();
+    topicGenerator.generateTopics("profile1", 35, "profile1");
+    topicGenerator.assignTopics(statements, 35, "profile1");
+
+    Network_Synthesizer networkSynthesizer(statements, 35);
+    networkSynthesizer.calculateSimilarity();
+    networkSynthesizer.buildNetwork();
+    networkSynthesizer.findMST();
 
 
     return 0;

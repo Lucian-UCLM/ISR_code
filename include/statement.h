@@ -8,7 +8,12 @@
 #include <iostream>
 
 enum class Verdict {
-    // Define the verdicts (e.g., ACCEPTED, REJECTED) as needed
+    TRUE,
+    MOSTLY_TRUE,
+    HALF_TRUE,
+    MOSTLY_FALSE,
+    FALSE,
+    PANTS_FIRE
 };
 
 class Statement {
