@@ -7,7 +7,7 @@ PROJECT_NAME = @DOXYGEN_PROJECT_NAME@
 PROJECT_NUMBER = @DOXYGEN_PROJECT_VERSION@
 
 # Add sources
-INPUT = @DOXYGEN_PROJECT_ROOT@/README.md @DOXYGEN_PROJECT_ROOT@/include @DOXYGEN_PROJECT_ROOT@/documentation/pages
+INPUT = @DOXYGEN_PROJECT_ROOT@/README.md @DOXYGEN_PROJECT_ROOT@/include @DOXYGEN_PROJECT_ROOT@/documentation/pages @DOXYGEN_PROJECT_ROOT@/readme_resources
 EXTRACT_ALL = YES
 RECURSIVE = YES
 OUTPUT_DIRECTORY = @DOXYGEN_OUTPUT_DIRECTORY@
@@ -15,15 +15,9 @@ OUTPUT_DIRECTORY = @DOXYGEN_OUTPUT_DIRECTORY@
 # Use the README as a main page
 USE_MDFILE_AS_MAINPAGE = @DOXYGEN_PROJECT_ROOT@/README.md
 
-# Set relative include paths
+# set relative include paths
 FULL_PATH_NAMES = YES
 STRIP_FROM_PATH = @DOXYGEN_PROJECT_ROOT@/include @DOXYGEN_PROJECT_ROOT@
-
-# Include the readme_resources folder so assets like images are copied
-HTML_EXTRA_FILES = @DOXYGEN_PROJECT_ROOT@/readme_resources/factify-high-resolution-logo-transparent.png
-
-# Specify file patterns to include
-FILE_PATTERNS = *.h *.cpp
 
 # We use m.css to generate the html documentation, so we only need XML output
 GENERATE_XML = YES
@@ -32,9 +26,6 @@ GENERATE_LATEX = NO
 XML_PROGRAMLISTING = NO
 CREATE_SUBDIRS = NO
 
-# Enable Markdown support
-MARKDOWN_SUPPORT = YES
-
-# Include all directories, files, and namespaces in the documentation
+# Include all directories, files and namespaces in the documentation
 # Disable to include only explicitly documented objects
 M_SHOW_UNDOCUMENTED = YES
