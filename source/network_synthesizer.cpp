@@ -1,4 +1,4 @@
-#include "network_Synthesizer.h"
+#include "network_synthesizer.h"
 #include <cmath>
 #include <iostream>
 #include <fstream>
