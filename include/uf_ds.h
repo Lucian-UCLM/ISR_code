@@ -1,7 +1,7 @@
 #ifndef UF_DS_H
 #define UF_DS_H
 
-#include "Edge.h"
+#include "edge.h"
 
 /**
  * @class UF_DS

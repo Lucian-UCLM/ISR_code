@@ -1,4 +1,4 @@
-#include "Edge.h"
+#include "edge.h"
 
 /**
  * @brief Constructs an Edge with specified node identifiers, weight, and id.

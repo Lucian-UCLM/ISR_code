@@ -1,6 +1,6 @@
 // Topic_generator.cpp
-#include "Topic_generator.h"
-#include "Perplexity_utils.h"
+#include "topic_generator.h"
+#include "perplexity_utils.h"
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <iostream>
@@ -18,7 +18,7 @@ Topic_generator::Topic_generator() : malletFile(""), rawData("") {
 }
 
 void Topic_generator::importStoreData(Statements& statements) {
-    std::ifstream file("input/politifact_short.json");
+    std::ifstream file("input/politifact_factcheck_data_cleaned.json");
     if (!file.is_open()) {
         std::cerr << "Error: Could not open JSON file." << std::endl;
         return;
@@ -115,18 +115,12 @@ void Topic_generator::assignTopics(Statements& statements, int numOfTopics, cons
     std::cout << "Topics successfully assigned to the statements hash table." << std::endl;
 }
 
-
-
-void Topic_generator::exportSimilarity(const std::string& input, const std::string& fieldsToClean) {
-    (void)input;
-    (void)fieldsToClean;
-    return;
-}
-
 /**
  * @brief Example function to calculate perplexity for a given profile.
  * @param numTopics Number of topics in the model.
  */
+#include <fstream> // Include for file handling
+
 void Topic_generator::perplexityPypelyne(int numTopics) {
     size_t numWordsToConsider = 200;
     int numDocs;
@@ -147,13 +141,27 @@ void Topic_generator::perplexityPypelyne(int numTopics) {
         "rank_1_docs", "allocation_ratio", "allocation_count", "exclusivity"
     };
 
-    for (int i = 0; i < 12; ++i) {
-        std::cout << means[i] << "  ";
+    // Write data to a CSV file
+    std::ofstream csvFile("./temp/means_data.csv");
+    if (!csvFile.is_open()) {
+        std::cerr << "Error: Unable to open file for writing!" << std::endl;
+        return;
     }
 
+    // Write headers
+    csvFile << numTopics << "\n";
+    csvFile << perplexity <<"\n";
+
+    // Write data
+    for (int i = 0; i < 12; ++i) {
+        csvFile << means[i] << "\n";
+    }
+
+    csvFile.close();
+    std::cout << "Data successfully exported to means_data.csv" << std::endl;
 
     delete[] docTopicProbs;
     delete[] wordTopicProbs;
     delete[] docProbs;
-    
 }
+

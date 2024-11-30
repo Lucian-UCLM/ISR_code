@@ -79,17 +79,3 @@ packageProject(
 
 install(TARGETS nlohmann_json EXPORT nlohmann_json-config DESTINATION lib)
 install(EXPORT nlohmann_json-config DESTINATION share/nlohmann_json/cmake)
-
-# ---- Add FactifyTests ----
-
-# enable_testing()
-
-# include(${doctest_SOURCE_DIR}/scripts/cmake/doctest.cmake)
-# doctest_discover_tests(${PROJECT_NAME})
-
-# ---- code coverage ----
-
-if(ENABLE_TEST_COVERAGE)
-  target_compile_options(Factify PUBLIC -O0 -g -fprofile-arcs -ftest-coverage)
-  target_link_options(Factify PUBLIC -fprofile-arcs -ftest-coverage)
-endif()

@@ -49,6 +49,17 @@ double* calculateDocumentProbabilities(double* docTopicProbs, int numDocs, int n
  */
 double calculatePerplexity(double* docProbs, int numDocs, int totalWordsInCorpus);
 
+/**
+ * @brief Calculates the mean values of various metrics from the diagnostics file.
+ * 
+ * This function parses the diagnostics XML file to extract various metrics for each topic
+ * and calculates the mean values of these metrics across all topics.
+ * 
+ * @param diagnosticsFile The name of the diagnostics file (without the "_diagnostics.xml" suffix).
+ * @param numTopics The number of topics in the model.
+ * @return Pointer to an array of mean values for the metrics (size: 12). The caller should not delete this array.
+ *         Returns nullptr if there is an error loading the diagnostics file.
+ */
 double* calculateMeans(const std::string& diagnosticsFile, int numTopics);
 
 #endif // PERPLEXITY_UTILS_H

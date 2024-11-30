@@ -1,4 +1,4 @@
-#include "Network.h"
+#include "network.h"
 #include <iostream>
 #include <algorithm>
 #include <thread>

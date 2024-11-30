@@ -1,11 +1,11 @@
-#include "Network_Synthesizer.h"
+#include "network_Synthesizer.h"
 #include <cmath>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <iomanip>
-
 #include <chrono>
+#include <set>
 
 // --- Constructor ---
 Network_Synthesizer::Network_Synthesizer(const Statements& statements, int numTopics)
@@ -51,7 +51,8 @@ double Network_Synthesizer::calculateCosineSimilarity(int doc1, int doc2) const 
     for (int k = 0; k < numTopics; ++k) {
         dotProduct += documents[doc1][k] * documents[doc2][k];
     }
-    return (modulus[doc1] > 0 && modulus[doc2] > 0) ? dotProduct / (modulus[doc1] * modulus[doc2]) : 0.0;
+    double cosineSimilarity = (modulus[doc1] > 0 && modulus[doc2] > 0) ? dotProduct / (modulus[doc1] * modulus[doc2]) : 0.0;
+    return 1.0 - cosineSimilarity; // Invert the similarity to represent stronger relations with lower values
 }
 
 // --- Public Methods ---
@@ -114,6 +115,96 @@ void Network_Synthesizer::findMST() {
     }
 
     std::cout << "MST successfully calculated. Total weight: " << mstWeight << "\n";
+}
+
+void Network_Synthesizer::exportMSTWithNodeData(const std::string& edgeFilename, const std::string& nodeFilename, const Statements& statements) const {
+    // Export MST edges
+    std::ofstream edgeFile(edgeFilename);
+    if (!edgeFile.is_open()) {
+        std::cerr << "Error: Could not open file " << edgeFilename << " for writing." << std::endl;
+        return;
+    }
+
+    edgeFile << "source,target,weight\n"; // Header for edges CSV
+    for (const auto& edge : mst) {
+        edgeFile << edge.getNode1() << "," << edge.getNode2() << "," << edge.getWeight() << "\n";
+    }
+    edgeFile.close();
+    std::cout << "MST edges exported to " << edgeFilename << std::endl;
+
+    // Export node data
+    std::ofstream nodeFile(nodeFilename);
+    if (!nodeFile.is_open()) {
+        std::cerr << "Error: Could not open file " << nodeFilename << " for writing." << std::endl;
+        return;
+    }
+
+    nodeFile << "node_id,verdict\n"; // Header for nodes CSV
+    for (int i = 0; i < numDocuments; ++i) {
+        std::string verdict = statements.getVerdict(i); // Retrieve the verdict for this node
+        nodeFile << i << "," << verdict << "\n";
+    }
+    nodeFile.close();
+    std::cout << "Node data exported to " << nodeFilename << std::endl;
+}
+
+void Network_Synthesizer::exportMSTToGraphMLWithNodeData(const std::string& filename, const Statements& statements) const {
+    // Open the GraphML file for writing
+    std::ofstream outputFile(filename);
+    if (!outputFile.is_open()) {
+        std::cerr << "Error: Could not open file " << filename << " for writing." << std::endl;
+        return;
+    }
+
+    // Write the GraphML header
+    outputFile << R"(<?xml version="1.0" encoding="UTF-8"?>)" << '\n';
+    outputFile << R"(<graphml xmlns="http://graphml.graphdrawing.org/xmlns")" << '\n';
+    outputFile << R"(    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance")" << '\n';
+    outputFile << R"(    xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns )" << '\n';
+    outputFile << R"(     http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">)" << '\n';
+    outputFile << R"(<graph id="G" edgedefault="undirected">)" << '\n';
+
+    // Add node attributes for verdict
+    outputFile << R"(<key id="verdict" for="node" attr.name="verdict" attr.type="string"/>)" << '\n';
+    outputFile << R"(<key id="weight" for="edge" attr.name="weight" attr.type="double"/>)" << '\n';
+    outputFile << R"(<key id="label" for="edge" attr.name="label" attr.type="string"/>)" << '\n';
+
+    // Write nodes
+    std::set<int> nodes;
+    for (const auto& edge : mst) {
+        nodes.insert(edge.getNode1());
+        nodes.insert(edge.getNode2());
+    }
+
+    for (const int node : nodes) {
+        std::string verdict = statements.getVerdict(node); // Retrieve the verdict for this node
+        outputFile << "  <node id=\"" << node << "\">" << '\n';
+        outputFile << "    <data key=\"verdict\">" << verdict << "</data>" << '\n';
+        outputFile << "  </node>" << '\n';
+    }
+
+    // Write edges
+    int edgeId = 0;
+
+    // Write edges with corrected weight format
+    for (const auto& edge : mst) {
+        double scaledWeight = (1.0 - edge.getWeight()) * 100; // Scale weight for better visualization
+        outputFile << "  <edge id=\"e" << edgeId++ 
+                << "\" source=\"" << edge.getNode1()
+                << "\" target=\"" << edge.getNode2() << "\">" << '\n';
+        outputFile << "    <data key=\"weight\">" << scaledWeight << "</data>" << '\n';
+        outputFile << "    <data key=\"label\"> " << scaledWeight << "</data>" << '\n';
+        outputFile << "  </edge>" << '\n';
+    }
+
+
+
+    // Write the GraphML footer
+    outputFile << "</graph>" << '\n';
+    outputFile << "</graphml>" << '\n';
+
+    outputFile.close();
+    std::cout << "MST exported to GraphML successfully with node data to " << filename << std::endl;
 }
 
 
