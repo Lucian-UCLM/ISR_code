@@ -32,12 +32,17 @@ void Topic_generator::importStoreData(Statements& statements) {
         std::string verdict = item["verdict"];
         std::string comment = item["statement"];
         std::string date = item["statement_date"];
+        std::string originator = item["statement_originator"];
+        std::string source = item["statement_source"];
+        std::string factchecker = item["factchecker"];
+        std::string factcheckDate = item["factcheck_date"];
 
-        statements.addStatement(id++, comment, verdict, date);
+        statements.addStatement(id++, comment, verdict, date, originator, source, factchecker, factcheckDate);
     }
 
     std::cout << "Data successfully imported and stored in Statements table." << std::endl;
 }
+
 
 void Topic_generator::dataDateFilter(const std::string& input) {
     (void)input;

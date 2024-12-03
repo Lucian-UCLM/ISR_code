@@ -19,8 +19,13 @@ public:
      * @param comment The text of the statement.
      * @param verdictStr The verdict string (e.g., "true", "false").
      * @param date The date of the statement in "mm/dd/yyyy" format.
+     * @param originator The originator of the statement.
+     * @param source The source of the statement (e.g., news, speech).
+     * @param factchecker The name of the factchecker.
+     * @param factcheckDate The fact-checking date in "mm/dd/yyyy" format.
      */
-    void addStatement(int id, const std::string& comment, const std::string& verdictStr, const std::string& date);
+    void addStatement(int id, const std::string& comment, const std::string& verdictStr, const std::string& date,
+                      const std::string& originator, const std::string& source, const std::string& factchecker, const std::string& factcheckDate);
 
     /**
      * @brief Assigns topic proportions to an existing statement.
@@ -55,12 +60,36 @@ public:
     std::vector<double> getTopics(int id) const;
 
     /**
-     * @brief Retrieves the date of a statement by ID.
+     * @brief Retrieves the originator of a statement by ID.
      * 
      * @param id Identifier of the statement.
-     * @return The date as a string.
+     * @return The originator as a string.
      */
-    std::string getDate(int id) const;
+    std::string getOriginator(int id) const;
+
+    /**
+     * @brief Retrieves the source of a statement by ID.
+     * 
+     * @param id Identifier of the statement.
+     * @return The source as a string.
+     */
+    std::string getSource(int id) const;
+
+    /**
+     * @brief Retrieves the factchecker of a statement by ID.
+     * 
+     * @param id Identifier of the statement.
+     * @return The factchecker as a string.
+     */
+    std::string getFactchecker(int id) const;
+
+    /**
+     * @brief Retrieves the factcheck date of a statement by ID.
+     * 
+     * @param id Identifier of the statement.
+     * @return The factcheck date as a string.
+     */
+    std::string getFactcheckDate(int id) const;
 
     /**
      * @brief Retrieves the number of statements in the collection.

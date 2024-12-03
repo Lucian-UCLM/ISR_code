@@ -164,8 +164,12 @@ void Network_Synthesizer::exportMSTToGraphMLWithNodeData(const std::string& file
     outputFile << R"(     http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">)" << '\n';
     outputFile << R"(<graph id="G" edgedefault="undirected">)" << '\n';
 
-    // Add node attributes for verdict
+    // Add node attributes for metadata
     outputFile << R"(<key id="verdict" for="node" attr.name="verdict" attr.type="string"/>)" << '\n';
+    outputFile << R"(<key id="originator" for="node" attr.name="statement_originator" attr.type="string"/>)" << '\n';
+    outputFile << R"(<key id="source" for="node" attr.name="statement_source" attr.type="string"/>)" << '\n';
+    outputFile << R"(<key id="factchecker" for="node" attr.name="factchecker" attr.type="string"/>)" << '\n';
+    outputFile << R"(<key id="factcheck_date" for="node" attr.name="factcheck_date" attr.type="string"/>)" << '\n';
     outputFile << R"(<key id="weight" for="edge" attr.name="weight" attr.type="double"/>)" << '\n';
     outputFile << R"(<key id="label" for="edge" attr.name="label" attr.type="string"/>)" << '\n';
 
@@ -177,27 +181,33 @@ void Network_Synthesizer::exportMSTToGraphMLWithNodeData(const std::string& file
     }
 
     for (const int node : nodes) {
-        std::string verdict = statements.getVerdict(node); // Retrieve the verdict for this node
+        std::string verdict = statements.getVerdict(node);
+        std::string originator = statements.getOriginator(node);
+        std::string source = statements.getSource(node);
+        std::string factchecker = statements.getFactchecker(node);
+        std::string factcheckDate = statements.getFactcheckDate(node);
+
         outputFile << "  <node id=\"" << node << "\">" << '\n';
         outputFile << "    <data key=\"verdict\">" << verdict << "</data>" << '\n';
+        outputFile << "    <data key=\"originator\">" << originator << "</data>" << '\n';
+        outputFile << "    <data key=\"source\">" << source << "</data>" << '\n';
+        outputFile << "    <data key=\"factchecker\">" << factchecker << "</data>" << '\n';
+        outputFile << "    <data key=\"factcheck_date\">" << factcheckDate << "</data>" << '\n';
         outputFile << "  </node>" << '\n';
     }
 
     // Write edges
     int edgeId = 0;
 
-    // Write edges with corrected weight format
     for (const auto& edge : mst) {
         double scaledWeight = (1.0 - edge.getWeight()) * 100; // Scale weight for better visualization
-        outputFile << "  <edge id=\"e" << edgeId++ 
-                << "\" source=\"" << edge.getNode1()
-                << "\" target=\"" << edge.getNode2() << "\">" << '\n';
+        outputFile << "  <edge id=\"e" << edgeId++
+                   << "\" source=\"" << edge.getNode1()
+                   << "\" target=\"" << edge.getNode2() << "\">" << '\n';
         outputFile << "    <data key=\"weight\">" << scaledWeight << "</data>" << '\n';
-        outputFile << "    <data key=\"label\"> " << scaledWeight << "</data>" << '\n';
+        outputFile << "    <data key=\"label\">" << scaledWeight << "</data>" << '\n';
         outputFile << "  </edge>" << '\n';
     }
-
-
 
     // Write the GraphML footer
     outputFile << "</graph>" << '\n';
@@ -206,6 +216,7 @@ void Network_Synthesizer::exportMSTToGraphMLWithNodeData(const std::string& file
     outputFile.close();
     std::cout << "MST exported to GraphML successfully with node data to " << filename << std::endl;
 }
+
 
 
 // --- Debugging/Utility Methods ---

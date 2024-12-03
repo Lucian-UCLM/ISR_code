@@ -9,20 +9,20 @@
  * @param comment The text of the statement.
  * @param verdictStr The verdict string (e.g., "true", "false").
  * @param date The date of the statement in "mm/dd/yyyy" format.
+ * @param originator The originator of the statement.
+ * @param source The source of the statement (e.g., news, speech).
+ * @param factchecker The name of the factchecker.
+ * @param factcheckDate The fact-checking date in "mm/dd/yyyy" format.
  */
-void Statements::addStatement(int id, const std::string& comment, const std::string& verdictStr, const std::string& date) {
+void Statements::addStatement(int id, const std::string& comment, const std::string& verdictStr, const std::string& date,
+                              const std::string& originator, const std::string& source, const std::string& factchecker, const std::string& factcheckDate) {
     Verdict verdict = parseVerdict(verdictStr);
-    Statement statement(comment, verdict, date);
+    Statement statement(comment, verdict, date, originator, source, factchecker, factcheckDate);
     entries.emplace(id, statement);
 }
 
 /**
  * @brief Assigns topic proportions to an existing statement.
- * 
- * Topics are stored in the `topicEntries` map. An error message is logged if the statement ID is invalid.
- * 
- * @param id Identifier of the statement.
- * @param topics A vector of topic proportions.
  */
 void Statements::addTopics(int id, const std::vector<double>& topics) {
     if (entries.find(id) != entries.end()) {
@@ -34,27 +34,14 @@ void Statements::addTopics(int id, const std::vector<double>& topics) {
 
 /**
  * @brief Retrieves the comment of a statement by ID.
- * 
- * @param id Identifier of the statement.
- * @return The comment as a string.
  */
 std::string Statements::getComment(int id) const {
     auto it = entries.find(id);
-    if (it != entries.end()) {
-        return it->second.getComment();
-    } else {
-        std::cerr << "Error: Statement with id " << id << " not found." << std::endl;
-        return "";
-    }
+    return it != entries.end() ? it->second.getComment() : "";
 }
 
 /**
  * @brief Retrieves the verdict of a statement as a string by ID.
- * 
- * Uses the `getVerdict` method of the `Statement` class and converts the `Verdict` enum to a string.
- * 
- * @param id Identifier of the statement.
- * @return The verdict string (e.g., "true", "false").
  */
 std::string Statements::getVerdict(int id) const {
     auto it = entries.find(id);
@@ -68,32 +55,52 @@ std::string Statements::getVerdict(int id) const {
             case Verdict::PANTS_FIRE: return "pants-fire";
             default: return "unknown";
         }
-    } else {
-        std::cerr << "Error: Statement with id " << id << " not found." << std::endl;
-        return "unknown";
     }
+    return "unknown";
 }
 
 /**
  * @brief Retrieves the topic proportions of a statement by ID.
- * 
- * @param id Identifier of the statement.
- * @return A vector of topic proportions.
  */
 std::vector<double> Statements::getTopics(int id) const {
     auto it = topicEntries.find(id);
-    if (it != topicEntries.end()) {
-        return it->second;
-    } else {
-        std::cerr << "Error: No topics found for statement ID " << id << "." << std::endl;
-        return {};
-    }
+    return it != topicEntries.end() ? it->second : std::vector<double>{};
+}
+
+/**
+ * @brief Retrieves the originator of a statement by ID.
+ */
+std::string Statements::getOriginator(int id) const {
+    auto it = entries.find(id);
+    return it != entries.end() ? it->second.getOriginator() : "";
+}
+
+/**
+ * @brief Retrieves the source of a statement by ID.
+ */
+std::string Statements::getSource(int id) const {
+    auto it = entries.find(id);
+    return it != entries.end() ? it->second.getSource() : "";
+}
+
+/**
+ * @brief Retrieves the factchecker of a statement by ID.
+ */
+std::string Statements::getFactchecker(int id) const {
+    auto it = entries.find(id);
+    return it != entries.end() ? it->second.getFactchecker() : "";
+}
+
+/**
+ * @brief Retrieves the factcheck date of a statement by ID.
+ */
+std::string Statements::getFactcheckDate(int id) const {
+    auto it = entries.find(id);
+    return it != entries.end() ? it->second.getFactcheckDate() : "";
 }
 
 /**
  * @brief Retrieves the number of statements in the collection.
- * 
- * @return The total number of statements.
  */
 std::int32_t Statements::getSize() const {
     return static_cast<std::int32_t>(entries.size());
@@ -101,9 +108,6 @@ std::int32_t Statements::getSize() const {
 
 /**
  * @brief Parses a verdict string and converts it to a `Verdict` enum.
- * 
- * @param verdictStr The verdict string to parse.
- * @return The corresponding `Verdict` enum value.
  */
 Verdict Statements::parseVerdict(const std::string& verdictStr) const {
     if (verdictStr == "true") return Verdict::TRUE;
@@ -112,7 +116,5 @@ Verdict Statements::parseVerdict(const std::string& verdictStr) const {
     if (verdictStr == "mostly-false") return Verdict::MOSTLY_FALSE;
     if (verdictStr == "false") return Verdict::FALSE;
     if (verdictStr == "pants-fire") return Verdict::PANTS_FIRE;
-
-    std::cerr << "Warning: Unknown verdict \"" << verdictStr << "\". Defaulting to FALSE." << std::endl;
     return Verdict::FALSE;
 }
